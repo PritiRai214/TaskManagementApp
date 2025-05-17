@@ -12,7 +12,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
+//  Import your routes
+const authRoutes = require('./Routes/authRoutes');
+
+//  Use the routes
+app.use('/api/auth', authRoutes);
+
+// Default route
 app.get('/', (req, res) => {
   res.send('Task Management API is running...');
 });
