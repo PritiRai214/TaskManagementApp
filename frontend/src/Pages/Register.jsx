@@ -10,14 +10,17 @@ const Register = () => {
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      await API.post('/auth/register', form);
-      navigate('/login');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Registration failed');
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await API.post('/auth/register', form);
+    localStorage.setItem('token', res.data.token); // optional
+    navigate('/dashboard'); // or navigate('/login') if no token returned
+  } catch (err) {
+  console.error('Registration error:', err.response?.data || err.message);
+  alert(err.response?.data?.message || 'Registration failed');
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto">

@@ -1,24 +1,33 @@
 const Task = require('../models/Task');
 
 const getTasks = async (req, res) => {
-  const tasks = await Task.find({ user: req.user.id }).sort({ createdAt: -1 });
-  res.status(200).json(tasks);
+  try {
+    const tasks = await Task.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.status(200).json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 };
 
 const createTask = async (req, res) => {
   const { title, description, dueDate, category } = req.body;
   if (!title) return res.status(400).json({ message: 'Title is required' });
 
-  const task = await Task.create({
-    title,
-    description,
-    dueDate,
-    category,
-    user: req.user.id,
-  });
+  try {
+    const task = await Task.create({
+      title,
+      description,
+      dueDate,
+      category,
+      user: req.user.id,
+    });
 
-  res.status(201).json(task);
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 };
+
 
 const updateTask = async (req, res) => {
   const task = await Task.findById(req.params.id);
