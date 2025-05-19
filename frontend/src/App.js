@@ -1,18 +1,15 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Pages/Login';
-import Register from './Pages/Register';
-import Dashboard from './Pages/Dashboard';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import Dashboard from "./Pages/Dashboard"; // Adjust the path as needed
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
+        {/* Add more routes here */}
+      </Routes>n
     </Router>
   );
 }
