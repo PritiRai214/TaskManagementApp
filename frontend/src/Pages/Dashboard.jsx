@@ -3,8 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import API from '../Services/Api';
 import Navbar from '../Components/Navbar';
 
+const categoryColors = {
+  Personal: 'bg-blue-100 border-blue-300',
+  Work: 'bg-green-100 border-green-300',
+  Urgent: 'bg-red-100 border-red-300',
+  Default: 'bg-gray-100 border-gray-300'
+};
+
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
   const navigate = useNavigate();
 
   const fetchTasks = async () => {
@@ -12,15 +20,14 @@ const Dashboard = () => {
       const res = await API.get('/tasks');
       setTasks(res.data);
     } catch (err) {
-      if (err.response?.status === 401) navigate('/login');
+      if (err.response?.status === 401) setIsAuthenticated(false);
     }
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (isAuthenticated) fetchTasks();
+  }, [isAuthenticated]);
 
-  // Navigate to edit page for the selected task
   const handleEdit = (taskId) => {
     navigate(`/tasks/edit/${taskId}`);
   };
@@ -28,27 +35,49 @@ const Dashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">Your Tasks</h2>
-        {tasks.length === 0 && <p>No tasks found.</p>}
+      <div className="min-h-screen bg-gradient-to-tr from-indigo-100 to-pink-100 p-6">
+        <h2 className="text-3xl font-bold text-indigo-800 mb-6">Welcome to Your Dashboard</h2>
 
-        {tasks.map(task => (
-          <div key={task._id} className="p-3 border mb-2 bg-white shadow-md rounded flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-semibold">{task.title}</h3>
-              <p>{task.description}</p>
-              <p className="text-sm text-gray-500">
-                Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}
-              </p>
-            </div>
-            <button
-              onClick={() => handleEdit(task._id)}
-              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-            >
-              Edit
-            </button>
+        {!isAuthenticated ? (
+          <div className="text-gray-700 text-lg">
+            <p>👋 Welcome to the Task Management App!</p>
+            <p className="mt-2">Please <span className="font-semibold text-indigo-600">log in</span> to view your tasks.</p>
           </div>
-        ))}
+        ) : (
+          <>
+            {tasks.length === 0 ? (
+              <p className="text-gray-700">You have no tasks yet. Start by creating one!</p>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {tasks.map(task => {
+                  const categoryClass = categoryColors[task.category] || categoryColors.Default;
+
+                  return (
+                    <div
+                      key={task._id}
+                      className={`p-4 border rounded-lg shadow-md ${categoryClass}`}
+                    >
+                      <h3 className="text-xl font-bold text-gray-800">{task.title}</h3>
+                      <p className="text-gray-700 mt-1">{task.description}</p>
+                      <p className="text-sm text-gray-600 mt-2">
+                        Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}
+                      </p>
+                      <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold text-white rounded-full bg-indigo-500">
+                        {task.category || 'General'}
+                      </span>
+                      <button
+                        onClick={() => handleEdit(task._id)}
+                        className="mt-3 inline-block bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-4 py-1 rounded"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </>
   );

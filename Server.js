@@ -14,9 +14,11 @@ app.use(cors());
 
 //  Import your routes
 const authRoutes = require('./Routes/authRoutes');
+const taskRoutes = require('./Routes/taskRoutes');
 
 //  Use the routes
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes); 
 
 // Default route
 app.get('/', (req, res) => {
@@ -24,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // Connect to MongoDB and start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

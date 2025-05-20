@@ -19,7 +19,7 @@ const createTask = async (req, res) => {
       description,
       dueDate,
       category,
-      user: req.user.id,
+      user: req.user._id,
     });
 
     res.status(201).json(task);
@@ -33,7 +33,7 @@ const updateTask = async (req, res) => {
   const task = await Task.findById(req.params.id);
   if (!task) return res.status(404).json({ message: 'Task not found' });
 
-  if (task.user.toString() !== req.user.id)
+  if (task.user.toString() !== req.user._id)
     return res.status(401).json({ message: 'Not authorized' });
 
   const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -44,7 +44,7 @@ const deleteTask = async (req, res) => {
   const task = await Task.findById(req.params.id);
   if (!task) return res.status(404).json({ message: 'Task not found' });
 
-  if (task.user.toString() !== req.user.id)
+  if (task.user.toString() !== req.user._id)
     return res.status(401).json({ message: 'Not authorized' });
 
   await task.remove();

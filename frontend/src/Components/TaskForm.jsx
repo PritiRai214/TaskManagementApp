@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API from "../Services/Api"; // Adjust the import path as needed
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 function TaskForm({ initialData = {} }) {
   const [title, setTitle] = useState(initialData.title || "");
@@ -62,6 +63,8 @@ function TaskForm({ initialData = {} }) {
   };
 
   return (
+    <>
+      <Navbar />
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 border rounded-md shadow-md">
       <h2 className="text-2xl font-semibold mb-6">{initialData._id ? "Edit Task" : "Create Task"}</h2>
 
@@ -138,6 +141,7 @@ function TaskForm({ initialData = {} }) {
         {initialData._id ? "Update Task" : "Save Task"}
       </button>
     </form>
+    </>
   );
 }
 

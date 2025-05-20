@@ -9,4 +9,7 @@ const taskSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Task', taskSchema);
+// Check if model already exists, otherwise create it
+const Task = mongoose.models.Task || mongoose.model('Task', taskSchema);
+
+module.exports = Task;

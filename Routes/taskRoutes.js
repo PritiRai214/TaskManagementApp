@@ -1,13 +1,14 @@
 const express = require('express');
-const { getTasks, createTask, updateTask, deleteTask } = require('../controllers/taskController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const authMiddleware = require('../Middlewares/authMiddleware');
+const { getTasks, createTask, updateTask, deleteTask } = require('../Controllers/taskController');
 
-router.use(authMiddleware);
+// Apply authMiddleware only here, so tasks routes require auth
+//router.use(authMiddleware);
 
-router.get('/', getTasks);
-router.post('/', createTask);
-router.put('/:id', updateTask);
-router.delete('/:id', deleteTask);
+router.get('/', authMiddleware, getTasks);
+router.post('/', authMiddleware, createTask);
+router.put('/:id', authMiddleware, updateTask);
+router.delete('/:id', authMiddleware, deleteTask);
 
 module.exports = router;

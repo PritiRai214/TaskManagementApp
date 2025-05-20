@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
@@ -20,18 +21,25 @@ function Navbar() {
     navigate("/login");
   };
 
+  const isActive = (path) => location.pathname === path;
+
+  const linkBase = "text-blue-600 hover:text-blue-800 transition";
+
+  const activeLink = "font-bold text-indigo-700";
+
   return (
-    <nav className="bg-gray-100 p-4 flex justify-between items-center">
+    <nav className="bg-gray-100 p-4 flex justify-between items-center shadow-md">
       <div className="space-x-4">
         {!token ? (
           <>
-            <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
-            <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+           <Link to="/dashboard" className={`${linkBase} ${isActive('/dashboard') ? activeLink : ''}`}>Dashboard</Link>
+            <Link to="/login" className={`${linkBase} ${isActive('/login') ? activeLink : ''}`}>Login</Link>
+            <Link to="/register" className={`${linkBase} ${isActive('/register') ? activeLink : ''}`}>Register</Link>
           </>
         ) : (
           <>
-            <Link to="/dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
-             <Link to="/TaskForm" className="text-blue-600 hover:underline">Create Task</Link>
+            <Link to="/dashboard" className={`${linkBase} ${isActive('/dashboard') ? activeLink : ''}`}>Dashboard</Link>
+            <Link to="/taskform" className={`${linkBase} ${isActive('/taskform') ? activeLink : ''}`}>Create Task</Link>
           </>
         )}
       </div>
